@@ -1,10 +1,10 @@
 {
   "private": true,
   "name": "promise-tools",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "",
-  "main": "index.js",
-  "files": ["index.js"],
+  "main": "src/index.js",
+  "files": ["src"],
   "scripts": {
     "test": "mocha"
   },

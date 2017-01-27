@@ -1,9 +1,12 @@
+const coroutine = require('./coroutine')
 
-module.exports = {make, fold, reduce, scan, forEach}
+module.exports = {
+    make, fold, reduce, scan, forEach,
+    coroutine, co: coroutine,
+}
 
-function make(f)
+function make(f, ...args)
 {
-    let args = Array.prototype.slice.call(arguments, 1)
     return new Promise((resolve, reject) => {
         args.push((err, ret) => {
             if (err)
