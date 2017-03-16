@@ -1,7 +1,7 @@
 const coroutine = require('./coroutine')
 
 module.exports = {
-    make, fold, reduce, scan, forEach,
+    make, delay, fold, reduce, scan, forEach,
     coroutine, co: coroutine,
 }
 
@@ -16,6 +16,11 @@ function make(f, ...args)
         })
         f.apply(this, args)
     })
+}
+
+function delay(t)
+{
+    return new Promise(resolve => setTimeout(resolve, t))
 }
 
 function fold(initial, xs, f, ctx)
