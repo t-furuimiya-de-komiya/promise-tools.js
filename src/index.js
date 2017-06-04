@@ -1,7 +1,8 @@
 const coroutine = require('./coroutine')
 
 module.exports = {
-    make, delay, fold, reduce, scan, forEach,
+    make, maybe, delay,
+    fold, reduce, scan, forEach,
     coroutine, co: coroutine,
 }
 
@@ -14,6 +15,14 @@ function make(f, ...args)
             else
                 resolve(ret)
         })
+        f.apply(this, args)
+    })
+}
+
+function maybe(f, ...args)
+{
+    return new Promise(resolve => {
+        args.push((err, val) => resolve({err, val}))
         f.apply(this, args)
     })
 }
