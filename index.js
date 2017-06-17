@@ -1,8 +1,16 @@
 const coroutine = require('./coroutine')
 
 module.exports = {
-    make, maybe, delay,
+    makev, make,
+    maybe, delay,
     coroutine, co: coroutine,
+}
+
+function makev(f, ...params)
+{
+    return new Promise((resolve, reject) =>
+        f.call(this, ...params, (err, ...args) =>
+            err ? reject(err) : resolve(args)))
 }
 
 function make(f, ...args)
