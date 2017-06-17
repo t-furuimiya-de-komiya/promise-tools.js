@@ -1,35 +1,36 @@
 const coroutine = require('./coroutine')
+const vargs = require('./vargs')
 
 module.exports = {
-    makev, make,
-    maybep,
-    maybe,
+    make, from, maybe, maybep,
     delay,
+    vargs, v: vargs,
     coroutine, co: coroutine,
-}
-
-function makev(f, ...params)
-{
-    return new Promise((resolve, reject) =>
-        f.call(this, ...params, (err, ...args) =>
-            err ? reject(err) : resolve(args)))
 }
 
 function make(f, ...args)
 {
-    return makev.call(this, f, ...args).then(val => val[0])
+    return new Promise((resolve, reject) =>
+        f.call(this, ...args, (err, ret) =>
+            err ? reject(err) : resolve(ret)))
 }
 
-function maybep(p)
+function from(f, ...params)
 {
-    return p.then((val => ({val})), (err => ({err})))
+    return new Promise(resolve =>
+        f.call(this, ...params, resolve))
 }
 
 function maybe(f, ...params)
 {
     return new Promise(resolve =>
-        f.call(this, ...params, (err, ...args) =>
-            resolve({err, args, val: args[0]})))
+        f.call(this, ...params, (err, val) =>
+            resolve({err, val})))
+}
+
+function maybep(p)
+{
+    return p.then((val => ({val})), (err => ({err})))
 }
 
 function delay(t)

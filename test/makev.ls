@@ -5,12 +5,12 @@ suite \#makev
 
 
 test '成功時' ->
-    expect promise.makev(f, 1, 2, 3)
+    expect promise.v.make(f, 1, 2, 3)
     .to.become [1, 2, 3]
 
 
 test '失敗時' ->
-    expect promise.makev(f, 3, 2, 1)
+    expect promise.v.make(f, 3, 2, 1)
     .to.be.rejected-with Error
 
 
