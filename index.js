@@ -2,7 +2,9 @@ const coroutine = require('./coroutine')
 
 module.exports = {
     makev, make,
-    maybe, delay,
+    maybep,
+    maybe,
+    delay,
     coroutine, co: coroutine,
 }
 
@@ -16,6 +18,11 @@ function makev(f, ...params)
 function make(f, ...args)
 {
     return makev.call(this, f, ...args).then(val => val[0])
+}
+
+function maybep(p)
+{
+    return p.then((val => ({val})), (err => ({err})))
 }
 
 function maybe(f, ...args)
