@@ -1,5 +1,5 @@
 require! './test.ls': {promise, expect, delay}
-require! '../src/timeout'
+require! '../timeout'
 
 suite \#timeout
 

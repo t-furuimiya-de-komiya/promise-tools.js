@@ -1,4 +1,5 @@
 require! './test.ls': {promise, expect, delay}
+require! '../seq': promise
 
 
 suite \#forEach
