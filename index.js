@@ -15,15 +15,7 @@ function makev(f, ...params)
 
 function make(f, ...args)
 {
-    return new Promise((resolve, reject) => {
-        args.push((err, ret) => {
-            if (err)
-                reject(err)
-            else
-                resolve(ret)
-        })
-        f.apply(this, args)
-    })
+    return makev.call(this, f, ...args).then(val => val[0])
 }
 
 function maybe(f, ...args)
