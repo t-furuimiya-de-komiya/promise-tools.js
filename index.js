@@ -25,12 +25,11 @@ function maybep(p)
     return p.then((val => ({val})), (err => ({err})))
 }
 
-function maybe(f, ...args)
+function maybe(f, ...params)
 {
-    return new Promise(resolve => {
-        args.push((err, val) => resolve({err, val}))
-        f.apply(this, args)
-    })
+    return new Promise(resolve =>
+        f.call(this, ...params, (err, ...args) =>
+            resolve({err, args, val: args[0]})))
 }
 
 function delay(t)
