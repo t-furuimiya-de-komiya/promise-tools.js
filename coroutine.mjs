@@ -1,6 +1,5 @@
-'use strict';
 
-function coroutine(it, recv)
+export default function coroutine(it, recv)
 {
     switch (Object.prototype.toString.call(it).slice(8, -1)) {
         case 'Promise':
@@ -9,7 +8,7 @@ function coroutine(it, recv)
             if (it.length > 0)
                 return (...args) =>
                     scanGenerator(it.call(recv || this, ...args))
-            it = it();
+            it = it()
         case 'Generator':
             return scanGenerator(it)
         default:
@@ -20,7 +19,7 @@ function coroutine(it, recv)
 function scanGenerator(it, prev)
 {
     try {
-        let {done, value} = it.next(prev);
+        let {done, value} = it.next(prev)
         return Promise.resolve(value)
         .catch(err => (it.throw(err), prev))
         .then(val => done ? val : scanGenerator(it, val))
@@ -28,5 +27,3 @@ function scanGenerator(it, prev)
         return Promise.reject(err)
     }
 }
-
-module.exports = coroutine;

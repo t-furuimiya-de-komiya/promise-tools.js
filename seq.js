@@ -1,11 +1,13 @@
-module.exports = {fold, reduce, scan, forEach}
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
 
 function fold(initial, xs, f, ctx)
 {
-    let p = Promise.resolve(initial)
-    let i = 0
+    let p = Promise.resolve(initial);
+    let i = 0;
     for (let x of xs)
-        p = p.then(y => f.call(ctx, y, x, i++, xs))
+        p = p.then(y => f.call(ctx, y, x, i++, xs));
     return p
 }
 
@@ -25,3 +27,8 @@ function forEach(f, ctx)
 {
     return xs => scan(xs, f, ctx)
 }
+
+exports.fold = fold;
+exports.reduce = reduce;
+exports.scan = scan;
+exports.forEach = forEach;
