@@ -13,13 +13,13 @@ function watch
 export function test
     tests = new mocha {ui: \qunit}
     gulp.src <[test/*.ls]>, {-read}
-        .pipe new stream.Transform {
+        .pipe new stream.Writable {
             +object-mode
-            transform: (file, _, done) ->
+            write: (file, _, done) ->
                 delete require.cache[file.path]
                 tests.add-file file.path
                 done null
-            flush: (done) ->
+            final: (done) ->
                 tests.run ->
                     done null
         }
@@ -28,13 +28,17 @@ export function build
     gulp.src <[src/*.mjs]>
         .pipe new stream.Transform {
             +object-mode
-            transform: (file, _, done) ->
-                @push file
-                rollup entry: file.path, onwarn: report -> gulplog.warn it
-                .then ->
-                    {code} = it.generate {-interop, format: \cjs}
-                    done null, file.clone extname: \.js, contents: Buffer.from code
-                .catch report -> gulplog.error it
+            transform: (mjs, _, done) ->
+                rollup input: mjs.path, onwarn: report -> gulplog.warn mjs.relative, it
+                .then -> it.generate {-interop, format: \cjs}
+                .then ~>
+                    @push mjs
+                    js = mjs.clone {-contents}
+                    js.extname = \.js
+                    js.contents = Buffer.from it.code
+                    @push js
+                .catch report -> gulplog.error mjs.relative, it
+                .then -> done null
         }
         .pipe gulp.dest '.'
 
