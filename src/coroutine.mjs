@@ -16,14 +16,23 @@ export default function coroutine(it, recv)
     }
 }
 
-function scanGenerator(it, prev)
+function scanGenerator(it)
 {
     try {
-        let {done, value} = it.next(prev)
-        return Promise.resolve(value)
-        .catch(err => (it.throw(err), prev))
-        .then(val => done ? val : scanGenerator(it, val))
+        return genTail(it, it.next())
     } catch (err) {
         return Promise.reject(err)
     }
+}
+
+function genTail(it, cur)
+{
+    const {done, value} = cur
+    const p = Promise.resolve(value)
+    return done ?
+        p
+    :
+        p.then(
+            (x => genTail(it, it.next(x))),
+            (e => genTail(it, it.throw(e))))
 }

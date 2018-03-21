@@ -40,3 +40,39 @@ test 'Promise' ->
     expect Promise.all xs.map (x) ->
         promise.co delay(1).then(-> x)
     .to.become xs
+
+test 'rejection' ->
+    expect promise.co !->*
+        yield Promise.reject 1
+    .to.be.rejected-with 1
+
+test 'rejected on throw' ->
+    expect promise.co !->*
+        throw 1
+    .to.be.rejected-with 1
+
+test 'yielding in catch' ->
+    expect promise.co ->*
+        try
+            yield Promise.reject 1
+        catch err
+            yield 2
+        3
+    .to.become 3
+
+test 'rejection on try-catch' ->
+    expect promise.co !->*
+        try
+            throw 1
+        catch err
+            throw err
+    .to.be.rejected-with 1
+
+test 'rejected on rejection in catch' ->
+    expect promise.co !->*
+        try
+            throw 1
+        catch err
+            yield Promise.reject err
+            yield 2
+    .to.be.rejected-with 1
