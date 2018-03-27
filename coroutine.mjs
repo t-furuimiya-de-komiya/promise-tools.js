@@ -16,23 +16,15 @@ export default function coroutine(it, recv)
     }
 }
 
-function scanGenerator(it)
+async function scanGenerator(it)
 {
-    try {
-        return genTail(it, it.next())
-    } catch (err) {
-        return Promise.reject(err)
+    let {done, value} = it.next()
+    while (!done) {
+        try {
+            ({done, value} = it.next(await value))
+        } catch (err) {
+            ({done, value} = it.throw(err))
+        }
     }
-}
-
-function genTail(it, cur)
-{
-    const {done, value} = cur
-    const p = Promise.resolve(value)
-    return done ?
-        p
-    :
-        p.then(
-            (x => genTail(it, it.next(x))),
-            (e => genTail(it, it.throw(e))))
+    return value
 }
